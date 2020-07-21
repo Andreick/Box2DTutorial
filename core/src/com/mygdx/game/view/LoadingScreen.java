@@ -1,0 +1,48 @@
+package com.mygdx.game.view;
+
+import com.badlogic.gdx.Screen;
+import com.mygdx.game.controller.MainClass;
+
+public class LoadingScreen implements Screen {
+
+    private MainClass parent;
+
+    public LoadingScreen(MainClass mainClass) {
+        parent = mainClass;
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+        parent.changeScreen(MainClass.MENU);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        //parent.dispose();
+    }
+}
