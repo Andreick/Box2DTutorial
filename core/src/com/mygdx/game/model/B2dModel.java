@@ -46,8 +46,8 @@ public class B2dModel {
         //createObject();
         //createMovingObject();
 
-        astMng.queueAddSounds();
-        astMng.manager.finishLoading();
+        //astMng.queueAddSounds();
+        //astMng.manager.finishLoading();
 
         ping = astMng.manager.get("sounds/ping.wav");
         boing = astMng.manager.get("sounds/boing.wav");

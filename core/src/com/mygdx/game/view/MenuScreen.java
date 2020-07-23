@@ -25,7 +25,7 @@ public class MenuScreen implements Screen {
 
         parent.asstMng.queueAddSkin();
         parent.asstMng.manager.finishLoading();
-        skin = parent.asstMng.manager.get("skin/uiskin.json");
+        skin = parent.asstMng.manager.get("skins/uiskin.json");
     }
 
     @Override

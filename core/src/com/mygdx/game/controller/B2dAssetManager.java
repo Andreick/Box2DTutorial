@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class B2dAssetManager {
@@ -12,12 +13,15 @@ public class B2dAssetManager {
 
     //Textures
 
-    public final String playerImage = "images/player.png";
-    public final String enemyImage = "images/enemy.png";
+    public final String gameImages = "images/game.atlas";
+    public final String loadingImages = "images/loading.atlas";
 
     public void queueAddImages() {
-        manager.load(playerImage, Texture.class);
-        manager.load(enemyImage, Texture.class);
+        manager.load(gameImages, TextureAtlas.class);
+    }
+
+    public void queueAddLoadingImages() {
+        manager.load(loadingImages, TextureAtlas.class);
     }
 
     //Sounds
@@ -40,10 +44,18 @@ public class B2dAssetManager {
 
     //Skins
 
-    public final String skin = "skin/uiskin.json";
+    public final String skin = "skins/uiskin.json";
 
     public void queueAddSkin() {
-        SkinParameter params = new SkinParameter("skin/uiskin.atlas");
+        SkinParameter params = new SkinParameter("skins/uiskin.atlas");
         manager.load(skin, Skin.class, params);
     }
+
+    //Fonts
+
+    public void queueAddFonts(){}
+
+    //Effects
+
+    public void queueAddParticleEffects(){}
 }

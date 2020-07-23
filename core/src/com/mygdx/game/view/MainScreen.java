@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -27,7 +29,8 @@ public class MainScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
 
     private SpriteBatch batch;
-    private Texture playerTexture;
+    private TextureAtlas atlas;
+    private AtlasRegion playerTexture;
 
     public MainScreen(MainClass mainClass) {
         parent = mainClass;
@@ -40,10 +43,10 @@ public class MainScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
 
         batch = new SpriteBatch();
-        parent.asstMng.queueAddImages();
-        parent.asstMng.manager.finishLoading();
 
-        playerTexture = parent.asstMng.manager.get("images/player.png");
+        atlas = parent.asstMng.manager.get("images/game.atlas");
+
+        playerTexture = atlas.findRegion("player");
     }
 
     @Override
@@ -91,7 +94,6 @@ public class MainScreen implements Screen {
         parent.dispose();
         debugRenderer.dispose();
         batch.dispose();
-        playerTexture.dispose();
         model.world.dispose();
     }
 }
