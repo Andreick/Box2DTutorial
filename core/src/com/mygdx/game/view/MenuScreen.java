@@ -3,12 +3,14 @@ package com.mygdx.game.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.controller.MainClass;
 
@@ -16,7 +18,11 @@ public class MenuScreen implements Screen {
 
     private MainClass parent;
     private Stage stage;
+
     private Skin skin;
+
+    private TextureAtlas atlas;
+    private TextureAtlas.AtlasRegion background;
 
     public MenuScreen(MainClass mainClass) {
         parent = mainClass;
@@ -25,7 +31,10 @@ public class MenuScreen implements Screen {
 
         parent.asstMng.queueAddSkin();
         parent.asstMng.manager.finishLoading();
-        skin = parent.asstMng.manager.get("skins/uiskin.json");
+
+        skin = parent.asstMng.manager.get("skins/glassy-ui.json");
+        atlas = parent.asstMng.manager.get("images/loading.atlas");
+        background = atlas.findRegion("flamebackground");
     }
 
     @Override
@@ -34,7 +43,9 @@ public class MenuScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
+        table.setBackground(new TiledDrawable(background));
         //table.setDebug(true);
+
         stage.addActor(table);
 
         TextButton newGame = new TextButton("New Game", skin);

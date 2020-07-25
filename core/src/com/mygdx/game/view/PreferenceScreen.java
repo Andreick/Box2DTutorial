@@ -3,6 +3,7 @@ package com.mygdx.game.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.controller.MainClass;
 
@@ -23,6 +25,9 @@ public class PreferenceScreen implements Screen {
     private Stage stage;
 
     private Skin skin;
+
+    private TextureAtlas atlas;
+    private TextureAtlas.AtlasRegion background;
 
     private Label titleLabel;
     private Label volumeMusicLabel;
@@ -37,7 +42,10 @@ public class PreferenceScreen implements Screen {
 
         parent.asstMng.queueAddSkin();
         parent.asstMng.manager.finishLoading();
-        skin = parent.asstMng.manager.get("skins/uiskin.json");
+
+        skin = parent.asstMng.manager.get("skins/glassy-ui.json");
+        atlas = parent.asstMng.manager.get("images/loading.atlas");
+        background = atlas.findRegion("flamebackground");
     }
 
     @Override
@@ -46,6 +54,7 @@ public class PreferenceScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
+        table.setBackground(new TiledDrawable(background));
         //table.setDebug(true);
         stage.addActor(table);
 
@@ -97,7 +106,7 @@ public class PreferenceScreen implements Screen {
             }
         });
 
-        final TextButton backButton = new TextButton("Back", skin, "toggle");
+        final TextButton backButton = new TextButton("Back", skin, "small");
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

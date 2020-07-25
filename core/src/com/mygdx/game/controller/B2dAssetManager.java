@@ -44,10 +44,10 @@ public class B2dAssetManager {
 
     //Skins
 
-    public final String skin = "skins/uiskin.json";
+    public final String skin = "skins/glassy-ui.json";
 
     public void queueAddSkin() {
-        SkinParameter params = new SkinParameter("skins/uiskin.atlas");
+        SkinParameter params = new SkinParameter("skins/glassy-ui.atlas");
         manager.load(skin, Skin.class, params);
     }
 

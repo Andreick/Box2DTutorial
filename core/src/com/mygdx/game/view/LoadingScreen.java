@@ -9,7 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.controller.MainClass;
+import com.mygdx.game.model.LoadingBarPart;
 
 public class LoadingScreen implements Screen {
 
@@ -27,16 +34,38 @@ public class LoadingScreen implements Screen {
 
     private MainClass parent;
     private SpriteBatch batch;
+    private Stage stage;
+
+    private Table table, loadingTable;
+    private Image titleImage, copyrightImage;
+
     private TextureAtlas atlas;
-    private AtlasRegion title;
-    private AtlasRegion dash;
+    private AtlasRegion title, dash, background, copyright;
 
     private Animation<TextureRegion> flameAnimation;
 
     public LoadingScreen(MainClass mainClass) {
         parent = mainClass;
-        batch = new SpriteBatch();
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+        stage = new Stage(new ScreenViewport());
+
+        loadAssets();
+
+        // initiate queueing of images but don't start loading
+        parent.asstMng.queueAddImages();
+        System.out.println("Loading images...");
+    }
+
+    private void loadAssets() {
+        parent.asstMng.queueAddLoadingImages();
+        parent.asstMng.manager.finishLoading();
+
+        // get images used to display loading progress
+        atlas = parent.asstMng.manager.get("images/loading.atlas");
+        title = atlas.findRegion("staying-alight-logo");
+        dash = atlas.findRegion("loading-dash");
+        background = atlas.findRegion("flamebackground");
+        copyright = atlas.findRegion("copyright");
+        flameAnimation = new Animation<TextureRegion>(0.07f, atlas.findRegions("flames"), PlayMode.LOOP);
     }
 
     private void drawLoadingBar(int stage, TextureRegion currentFrame) {
@@ -48,17 +77,33 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void show() {
-        parent.asstMng.queueAddLoadingImages();
-        parent.asstMng.manager.finishLoading();
+        titleImage = new Image(title);
+        copyrightImage = new Image(copyright);
 
-        atlas = parent.asstMng.manager.get("images/loading.atlas");
-        title = atlas.findRegion("staying-alight-logo");
-        dash = atlas.findRegion("loading-dash");
+        table = new Table();
+        table.setFillParent(true);
+        table.setBackground(new TiledDrawable(background));
+        //table.setDebug(true);
 
-        flameAnimation = new Animation<TextureRegion>(0.07f, atlas.findRegions("flames"), PlayMode.LOOP);
+        loadingTable = new Table();
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
+        loadingTable.add(new LoadingBarPart(dash,flameAnimation));
 
-        parent.asstMng.queueAddImages();
-        System.out.println("Loading images...");
+        table.add(titleImage).align(Align.center).pad(10, 0, 0, 0).colspan(10);
+        table.row();
+        table.add(loadingTable).width(400);
+        table.row();
+        table.add(copyrightImage).align(Align.center).pad(200,0,0,0).colspan(10);
+
+        stage.addActor(table);
     }
 
     @Override
@@ -67,18 +112,15 @@ public class LoadingScreen implements Screen {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stateTime += delta; // Accumulate elapsed animation time
-        // Get current frame of animation for the current stateTime
-        TextureRegion currentFrame = flameAnimation.getKeyFrame(stateTime, true);
-
-        batch.begin();
-        drawLoadingBar(currentLoadingStage * 2, currentFrame);
-        batch.draw(title, 135, 250);
-        batch.end();
-
         // check if the asset manager has finished loading
         if (parent.asstMng.manager.update()) { // Load some, will return true if done loading
             currentLoadingStage += 1;
+
+            if (currentLoadingStage <= 5) {
+                loadingTable.getCells().get((currentLoadingStage - 1) * 2).getActor().setVisible(true);
+                loadingTable.getCells().get((currentLoadingStage - 1) * 2 + 1).getActor().setVisible(true);
+            }
+
             switch (currentLoadingStage) {
                 case FONT:
                     System.out.println("Loading fonts....");
@@ -100,6 +142,7 @@ public class LoadingScreen implements Screen {
                     System.out.println("Finished");
                     break;
             }
+
             if (currentLoadingStage > 5) {
                 countDown -= delta;  // timer to stay on loading screen for short period once done loading
                 currentLoadingStage = 5;  // cap loading stage to 5 as will use later to display progress bar and more than 5 would go off the screen
@@ -108,6 +151,9 @@ public class LoadingScreen implements Screen {
                 }
             }
         }
+
+        stage.act();
+        stage.draw();
     }
 
     @Override
